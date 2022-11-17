@@ -15,7 +15,7 @@ function PlayerCard(props) {
         <Card>
             <Card.Body>
                 <div
-                    key={player.id}
+                    key={player.name}
                     style={{
                         display: 'flex',
                         justifyContent: 'start',

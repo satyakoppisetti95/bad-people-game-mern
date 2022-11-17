@@ -41,12 +41,19 @@ const getCurrentQuestion = async (gameId, token) => {
     return response.data
 }
 
+const getPlayersOfGame = async (token) => {
+    const config = getConfig(token)
+    const response = await axios.get(API_URL + '/players', config)
+    return response.data
+}
+
 const gameService = {
     createGame,
     joinGame,
     startGame,
     getGame,
-    getCurrentQuestion
+    getCurrentQuestion,
+    getPlayersOfGame
 }
 
 export default gameService;

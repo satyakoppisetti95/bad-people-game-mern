@@ -97,6 +97,19 @@ export const getCurrentQuestion = createAsyncThunk(
     }
 )
 
+export const getPlayersOfGame = createAsyncThunk(
+    'game/getPlayersOfGame',
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            return await gameService.getPlayersOfGame(token)
+        } catch (error) {
+            const message = constructErrorMsg(error)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 
 export const gameSlice = createSlice({
     name: 'game',
@@ -124,6 +137,15 @@ export const gameSlice = createSlice({
                 state.isError = true
                 state.message = action.payload
             })
+            .addCase(getPlayersOfGame.fulfilled, (state, action) => {
+                state.players = action.payload.players
+                state.gameStarted = action.payload.status === "started"
+            })
+            .addCase(getPlayersOfGame.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
             .addCase(startGame.pending, (state) => {
                 state.isLoading = true
             })
@@ -141,6 +163,8 @@ export const gameSlice = createSlice({
             })
             .addCase(joinGame.pending, (state) => {
                 state.isLoading = true
+                state.isError = false
+                state.message = null
             })
             .addCase(joinGame.fulfilled, (state, action) => {
                 state.game = action.payload

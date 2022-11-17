@@ -3,8 +3,6 @@ const gameModel = require('../models/gameModel');
 const userModel = require('../models/userModel');
 const deckModel = require('../models/deckModel');
 
-const {Types} = require('mongoose');
-
 // @desc    Create a new game
 // @route   POST /api/games
 // @access  Private
@@ -74,6 +72,21 @@ exports.joinGame = asyncHandler(async (req, res) => {
     res.status(200).json(game);
 });
 
+exports.getPlayersOfGame = asyncHandler(async (req, res) => {
+    const game = await gameModel.findById(req.user.game);
+    if(!game){
+        throw new Error('Game not found');
+    }
+    const result = game.players.map(player => {
+        return {
+            name: player.name,
+            score: player.score,
+            status: player.status
+        }
+    });
+    res.status(200).json({players: result,status: game.gameStatus});
+});
+
 const getPlayerForRound = (players, round) => {
     return players[round % players.length];
 };
@@ -92,7 +105,7 @@ exports.startGame = asyncHandler(async (req, res) => {
     if(game.gameStatus !== 'waiting'){
         throw new Error('Game has already started or finished');
     }
-    if(game.players.length < 2){
+    if(game.players.length < 3){
         throw new Error('Cannot start game, not enough players');
     }
     let numberOfRounds = req.body.numberOfRounds || 10;
