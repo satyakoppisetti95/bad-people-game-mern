@@ -93,9 +93,11 @@ function Register() {
                   <Form.Control type="password" placeholder="Confirm password" id='password2' name='password2' value={password2} onChange={onChange} />
                 </Form.Group>
 
+                <div className="d-grid gap-2">
                 <Button variant="primary" type="submit" >
-                  Submit
+                  Register
                 </Button>
+                </div>
               </Form>
             </Card.Body>
           </Card>

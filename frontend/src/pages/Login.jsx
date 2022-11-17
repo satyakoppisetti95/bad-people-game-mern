@@ -70,9 +70,11 @@ function Login() {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" placeholder="Password" id='password' name='password' value={password} onChange={onChange}/>
                         </Form.Group>
-                        <Button variant="primary" type="submit" >
-                            Submit
+                        <div className="d-grid gap-2">
+                        <Button variant="dark" type="submit" >
+                            Login
                         </Button>
+                        </div>
                     </Form>
                     </Card.Body>
                 </Card>

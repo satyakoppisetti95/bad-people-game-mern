@@ -48,7 +48,9 @@ function QuestionPage() {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        dispatch(answerQuestion(answer))
+        if(answer){
+            dispatch(answerQuestion(answer))
+        }
     }
 
     return (
@@ -81,7 +83,7 @@ function QuestionPage() {
                                                     </Form.Select>
                                                     <br/>
                                                     <div className="d-grid gap-2">
-                                                        <Button variant="dark" onClick={onSubmit}  style={{marginTop:'16px'}}>Submit Answer</Button>
+                                                        <Button variant="dark" onClick={onSubmit}  style={{marginTop:'16px'}} disabled={!answer}>Submit</Button>
                                                     </div>
                                                 </>
                                             ) : <></>
