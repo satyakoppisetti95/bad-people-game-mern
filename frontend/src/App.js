@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import CreateGame from './pages/CreateGame'
 import JoinGame from './pages/JoinGame'
+import QuestionPage from './pages/QuestionPage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/create' element={<CreateGame />} />
           <Route path='/join' element={<JoinGame />} />
+          <Route path='/question' element={<QuestionPage />} />
         </Routes>
         
       </Router>

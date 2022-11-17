@@ -1,4 +1,5 @@
 import { Card } from 'react-bootstrap'
+import { FaCheckCircle } from 'react-icons/fa'
 function PlayerCard(props) {
     const getInitialsFromName = (name) => {
         const names = name.split(' ')
@@ -18,27 +19,39 @@ function PlayerCard(props) {
                     key={player.name}
                     style={{
                         display: 'flex',
-                        justifyContent: 'start',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
                     }}
                 >
                     <div
                         style={{
-                            height: '32px',
-                            width: '32px',
-                            borderRadius: '50%',
-                            backgroundColor: '#3c3c3c',
-                            color: '#fff',
                             display: 'flex',
-                            justifyContent: 'center',
+                            justifyContent: 'start',
                             alignItems: 'center',
-                            marginRight: '8px',
                         }}
                     >
-                        {getInitialsFromName(player.name)}
+                        <div
+                            style={{
+                                height: '32px',
+                                width: '32px',
+                                borderRadius: '50%',
+                                backgroundColor: '#3c3c3c',
+                                color: '#fff',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginRight: '8px',
+                            }}
+                        >
+                            {getInitialsFromName(player.name)}
+                        </div>
+                        <div>{player.name}</div>
                     </div>
-                    <div>{player.name}</div>
+                    <div>
+                        {props.showCheck ? <FaCheckCircle style={{color:'green'}}/> : <></>}
+                    </div>
                 </div>
+
             </Card.Body>
         </Card>
 

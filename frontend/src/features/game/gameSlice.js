@@ -25,6 +25,8 @@ const initialState = {
     isLoading: false,
     players: [],
     currentQuestion: null,
+    roundStatus: null,
+    playerStatus: null,
 }
 
 
@@ -86,10 +88,10 @@ export const getGame = createAsyncThunk(
 
 export const getCurrentQuestion = createAsyncThunk(
     'game/getCurrentQuestion',
-    async (gameId, thunkAPI) => {
+    async (_, thunkAPI) => {
         try {
             const token = thunkAPI.getState().auth.user.token
-            return await gameService.getCurrentQuestion(gameId, token)
+            return await gameService.getCurrentQuestion(token)
         } catch (error) {
             const message = constructErrorMsg(error)
             return thunkAPI.rejectWithValue(message)
@@ -103,6 +105,19 @@ export const getPlayersOfGame = createAsyncThunk(
         try {
             const token = thunkAPI.getState().auth.user.token
             return await gameService.getPlayersOfGame(token)
+        } catch (error) {
+            const message = constructErrorMsg(error)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const answerQuestion = createAsyncThunk(
+    'game/answerQuestion',
+    async (answer, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            return await gameService.answerQuestion(answer, token)
         } catch (error) {
             const message = constructErrorMsg(error)
             return thunkAPI.rejectWithValue(message)
@@ -196,11 +211,21 @@ export const gameSlice = createSlice({
             })
             .addCase(getCurrentQuestion.fulfilled, (state, action) => {
                 state.currentQuestion = action.payload
+                state.players = action.payload.players
+                state.roundStatus = action.payload.roundStatus
+                state.playerStatus = action.payload.playerStatus
             })
             .addCase(getCurrentQuestion.rejected, (state, action) => {
                 state.isError = true
                 state.isSuccess = false
                 state.message = action.payload
+                state.players = null
+                state.roundStatus = null
+                state.playerStatus = null
+            })
+            .addCase(answerQuestion.fulfilled, (state, action) => {
+                state.playerStatus = 'results'
+                state.players = action.payload.players
             })
     },
 })

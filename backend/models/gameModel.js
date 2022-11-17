@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const GAME_STATUS_ENUM = ['waiting', 'started', 'finished']
 const ROUND_STATUS_ENUM = ['choosing','voting','waiting', 'results','finished']
-const PLAYER_STATUS_ENUM = ['voting','waiting','ready','finished']
+const PLAYER_STATUS_ENUM = ['voting','waiting','ready','finished','results']
 const gameSchema = mongoose.Schema(
   {
     host: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

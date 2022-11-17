@@ -165,7 +165,13 @@ exports.getCurrentQuestion = asyncHandler(async (req, res) => {
             status: player.status,
         };
     });
-    res.status(200).json({question:question.question,dictator:question.dictator,roundStatus:game.roundStatus,playerStatus:playerStatus,players:players});
+    res.status(200).json({question:question.question,
+        dictator:question.dictator,
+        roundStatus:game.roundStatus,
+        currentRound:game.currentRound,
+        totalRounds:game.questions.length,
+        playerStatus:playerStatus,
+        players:players});
 });
 
 
@@ -190,6 +196,8 @@ exports.answerQuestion = asyncHandler(async (req, res) => {
         game.players.forEach(player => {
             if(player.userId.toString() === game.questions[game.currentRound].dictator.userId.toString()){
                 player.status = 'waiting';
+            }else{
+                player.status = 'voting';
             }
         });
         game.markModified('players');
@@ -230,7 +238,7 @@ exports.answerQuestion = asyncHandler(async (req, res) => {
     }
 
     await game.save();
-    res.status(200).json({message: 'Answer submitted'});
+    res.status(200).json({message: 'Answer submitted', players:game.players});
 });
 
 

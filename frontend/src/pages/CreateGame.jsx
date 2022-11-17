@@ -40,7 +40,7 @@ function CreateGame() {
 
     useEffect(() => {
         if (gameStarted) {
-            navigate('/game')
+            navigate('/question')
         }
     }, [gameStarted, navigate])
 

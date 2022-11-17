@@ -35,15 +35,21 @@ const getGame = async (gameId, token) => {
 }
 
 
-const getCurrentQuestion = async (gameId, token) => {
+const getCurrentQuestion = async (token) => {
     const config = getConfig(token)
-    const response = await axios.get(API_URL + gameId + '/question', config)
+    const response = await axios.get(API_URL + 'question', config)
     return response.data
 }
 
 const getPlayersOfGame = async (token) => {
     const config = getConfig(token)
-    const response = await axios.get(API_URL + '/players', config)
+    const response = await axios.get(API_URL + 'players', config)
+    return response.data
+}
+
+const answerQuestion = async (answer, token) => {
+    const config = getConfig(token)
+    const response = await axios.post(API_URL + 'answer', { answer }, config)
     return response.data
 }
 
@@ -53,7 +59,8 @@ const gameService = {
     startGame,
     getGame,
     getCurrentQuestion,
-    getPlayersOfGame
+    getPlayersOfGame,
+    answerQuestion
 }
 
 export default gameService;

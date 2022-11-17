@@ -14,7 +14,7 @@ function CreateGame() {
     const { game, players, isLoading,isError,message,gameStarted } = useSelector(
         (state) => state.game
     )
-
+    //todo : resume game
     useEffect(() => {
         if (isError) {
           toast.error(message)
@@ -41,7 +41,7 @@ function CreateGame() {
 
     useEffect(() => {
         if (gameStarted) {
-            navigate('/game')
+            navigate('/question')
         }
     }, [gameStarted])
 
@@ -75,7 +75,7 @@ function CreateGame() {
                                 <br></br>
                                 <h3> Players in game...</h3>
                                 {players.map((player) => (
-                                    <PlayerCard key={player.id} player={player} />
+                                    <PlayerCard key={player.name} player={player} />
                                 ))}
                             </>
                         ):
