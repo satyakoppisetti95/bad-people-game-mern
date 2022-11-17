@@ -37,13 +37,13 @@ function CreateGame() {
                 clearInterval(pullPlayers)
             }
         }
-    }, [game])
+    }, [game,dispatch])
 
     useEffect(() => {
         if (gameStarted) {
             navigate('/question')
         }
-    }, [gameStarted])
+    }, [gameStarted,navigate])
 
     const [gameCode, setGameCode] = useState('')
 

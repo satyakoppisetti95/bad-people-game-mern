@@ -53,6 +53,24 @@ const answerQuestion = async (answer, token) => {
     return response.data
 }
 
+const getCurrentRoundScores = async (token) => {
+    const config = getConfig(token)
+    const response = await axios.get(API_URL + 'scores', config)
+    return response.data
+}
+
+const setPlayerReady = async (token) => {
+    const config = getConfig(token)
+    const response = await axios.post(API_URL + 'ready', {}, config)
+    return response.data
+}
+
+const leaveGame = async (token) => {
+    const config = getConfig(token)
+    const response = await axios.post(API_URL + 'leave', {}, config)
+    return response.data
+}
+
 const gameService = {
     createGame,
     joinGame,
@@ -60,7 +78,10 @@ const gameService = {
     getGame,
     getCurrentQuestion,
     getPlayersOfGame,
-    answerQuestion
+    answerQuestion,
+    getCurrentRoundScores,
+    setPlayerReady,
+    leaveGame
 }
 
 export default gameService;

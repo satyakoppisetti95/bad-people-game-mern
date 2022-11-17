@@ -7,7 +7,6 @@ import PlayerCard from '../components/playerCard'
 function CreateGame() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    let pullPlayers = null;
     const { user } = useSelector((state) => state.auth)
 
     const { game, players, isLoading, isError, message, gameStarted } = useSelector(
@@ -36,7 +35,7 @@ function CreateGame() {
                 clearInterval(pullPlayers)
             }
         }
-    }, [game])
+    }, [game,dispatch])
 
     useEffect(() => {
         if (gameStarted) {

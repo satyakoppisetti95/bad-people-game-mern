@@ -34,14 +34,25 @@ const getMe = async (token) => {
   if(response.data){
     const user = JSON.parse(localStorage.getItem('user'))
     user.game = response.data.game
-    user.isInGame = response.data.isInGame
     localStorage.setItem('user', JSON.stringify(user))
   }
   return response.data
 }
 
 // Logout user
-const logout = () => {
+const logout = async (token=null) => {
+  if(token){
+    try{
+      const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+      }
+      await axios.post('/api/games/leave', {isLogOut:true}, config)
+    }catch(error){
+      console.log(error)
+    }
+  }
   console.log('logout')
   localStorage.removeItem('user')
 }

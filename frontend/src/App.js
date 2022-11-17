@@ -10,6 +10,7 @@ import Register from './pages/Register'
 import CreateGame from './pages/CreateGame'
 import JoinGame from './pages/JoinGame'
 import QuestionPage from './pages/QuestionPage'
+import RoundScore from './pages/RoundScore';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path='/create' element={<CreateGame />} />
           <Route path='/join' element={<JoinGame />} />
           <Route path='/question' element={<QuestionPage />} />
+          <Route path='/roundscore' element={<RoundScore />} />
         </Routes>
         
       </Router>

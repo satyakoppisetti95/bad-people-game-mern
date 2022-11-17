@@ -3,11 +3,6 @@ const gameModel = require('../models/gameModel');
 const userModel = require('../models/userModel');
 const deckModel = require('../models/deckModel');
 
-// @desc    Create a new game
-// @route   POST /api/games
-// @access  Private
-
-//function to create random 4 digit game code
 const generateGameCode = () => {
     let gameCode = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -22,7 +17,7 @@ exports.createGame = asyncHandler(async (req, res) => {
     if(!user){
         throw new Error('User not found');
     }
-    if(user.isInGame){
+    if(user.game){
         throw new Error('User is already in a game');
     }
     const game = await gameModel.create({
@@ -38,7 +33,6 @@ exports.createGame = asyncHandler(async (req, res) => {
         questions: [],
     });
 
-    user.isInGame = true;
     user.game = game._id;
     await user.save();
 
@@ -65,7 +59,6 @@ exports.joinGame = asyncHandler(async (req, res) => {
     });
     await game.save();
 
-    user.isInGame = true;
     user.game = game._id;
     await user.save();
 
@@ -241,6 +234,40 @@ exports.answerQuestion = asyncHandler(async (req, res) => {
     res.status(200).json({message: 'Answer submitted', players:game.players});
 });
 
+exports.getRoundScores = asyncHandler(async (req, res) => {
+    const game = await gameModel.findById(req.user.game);
+    if(!game){
+        throw new Error('Game not found');
+    }
+    if(game.gameStatus !== 'started'){
+        throw new Error('Game has not started or has finished');
+    }
+    const currentRound = game.currentRound;
+    const question = game.questions[currentRound];
+    if(!question){
+        throw new Error('Question not found');
+    }
+    const correctAnswer = question.answer;
+    const playerAnswers = question.playerAnswers;
+    const players = game.players.map(player => {
+        return {
+            name: player.name,
+            score: player.score,
+            status: player.status,
+        };
+    });
+    const playerStatus = game.players.find(player => player.userId.toString() === req.user._id.toString()).status;
+    res.status(200).json({question:question.question,
+        dictator:question.dictator,
+        roundStatus:game.roundStatus,
+        currentRound:game.currentRound,
+        totalRounds:game.questions.length,
+        players:players,
+        playerAnswers:playerAnswers,
+        playerStatus:playerStatus,
+        correctAnswer:correctAnswer});
+});
+
 
 exports.setPlayerReady = asyncHandler(async (req, res) => {
     const game = await gameModel.findById(req.user.game);
@@ -282,5 +309,37 @@ exports.setPlayerReady = asyncHandler(async (req, res) => {
         await game.save();
     }
 
-    res.status(200).json({message: 'Player is ready'});
+    res.status(200).json({message: 'Player is ready',players:game.players});
+});
+
+exports.leaveGame = asyncHandler(async (req, res) => {
+    const isLogOut = req.body.isLogOut;
+    if(isLogOut){
+        const user = await userModel.findById(req.user._id);
+        if(!user){
+            throw new Error('User not found');
+        }
+        user.game = null;
+        await user.save();
+        res.status(200).json({message: 'User left game'});
+    }else{
+        const game = await gameModel.findById(req.user.game);
+        if(!game){
+            throw new Error('Game not found');
+        }
+        if(game.gameStatus !== 'started'){
+            throw new Error('Game has not started or has finished');
+        }
+        const player = game.players.find(player => player.userId.toString() === req.user._id.toString());
+        if(!player){
+            throw new Error('Player not found');
+        }
+        game.players = game.players.filter(player => player.userId.toString() !== req.user._id.toString());
+        game.markModified('players');
+        await game.save();
+        const user = await userModel.findById(req.user._id);
+        user.game = null;
+        await user.save();
+        res.status(200).json({message: 'Player left game', players:game.players});
+    }
 });

@@ -4,15 +4,20 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { getCurrentQuestion, answerQuestion } from '../features/game/gameSlice'
 import PlayerCard from '../components/playerCard'
-
+import { toast } from 'react-toastify'
 function QuestionPage() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { user } = useSelector((state) => state.auth)
 
-    const { game, players, isLoading, isError, message, roundStatus, currentQuestion, playerStatus } = useSelector(
+    const { players, isError, message, roundStatus, currentQuestion, playerStatus } = useSelector(
         (state) => state.game
     )
+    useEffect(() => {
+        if (isError) {
+          toast.error(message)
+        }
+    }, [isError, message])
 
     const [answer, setAnswer] = useState('')
 
@@ -20,9 +25,6 @@ function QuestionPage() {
         if (!user) {
             navigate('/login')
         }
-        // if (!game) {
-        //     navigate('/dashboard')
-        // }
     }, [user, navigate])
 
     useEffect(() => {
@@ -30,7 +32,10 @@ function QuestionPage() {
     }, [dispatch])
 
     useEffect(() => {
-        const pullQuestion = ((roundStatus === 'choosing' &&  playerStatus !== 'voting') || (playerStatus === 'waiting' && roundStatus !== 'results')) && setInterval(() => {
+        if(roundStatus === 'results'){
+            navigate('/roundscore')
+        }
+        const pullQuestion = ((roundStatus === 'choosing' &&  playerStatus !== 'voting') || (playerStatus === 'waiting' && roundStatus !== 'results') || (roundStatus === 'voting' && playerStatus !== 'waiting' )) && setInterval(() => {
             console.log('pulling question')
             dispatch(getCurrentQuestion())
         }, 3000)
@@ -39,7 +44,7 @@ function QuestionPage() {
                 clearInterval(pullQuestion)
             }
         }
-    }, [roundStatus])
+    }, [roundStatus,navigate,playerStatus,dispatch])
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -63,6 +68,9 @@ function QuestionPage() {
                                         <h6>by {currentQuestion.dictator.name} </h6>
                                         <hr/>
                                         <br></br>
+                                        {roundStatus}
+                                        <br/>
+                                        {playerStatus}
                                         {
                                             playerStatus === 'voting' ? (
                                                 <>

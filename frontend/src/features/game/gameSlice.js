@@ -27,6 +27,7 @@ const initialState = {
     currentQuestion: null,
     roundStatus: null,
     playerStatus: null,
+    leaderboard: null,
 }
 
 
@@ -118,6 +119,45 @@ export const answerQuestion = createAsyncThunk(
         try {
             const token = thunkAPI.getState().auth.user.token
             return await gameService.answerQuestion(answer, token)
+        } catch (error) {
+            const message = constructErrorMsg(error)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const getCurrentRoundScores = createAsyncThunk(
+    'game/getCurrentRoundScores',
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            return await gameService.getCurrentRoundScores(token)
+        } catch (error) {
+            const message = constructErrorMsg(error)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const setPlayerReady = createAsyncThunk(
+    'game/setPlayerReady',
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            return await gameService.setPlayerReady(token)
+        } catch (error) {
+            const message = constructErrorMsg(error)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const leaveGame = createAsyncThunk(
+    'game/leaveGame',
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            return await gameService.leaveGame(token)
         } catch (error) {
             const message = constructErrorMsg(error)
             return thunkAPI.rejectWithValue(message)
@@ -224,8 +264,24 @@ export const gameSlice = createSlice({
                 state.playerStatus = null
             })
             .addCase(answerQuestion.fulfilled, (state, action) => {
-                state.playerStatus = 'results'
+                if(state.roundStatus === 'choosing'){
+                    state.roundStatus = 'voting'
+                }
+                state.playerStatus = 'waiting'
                 state.players = action.payload.players
+            })
+            .addCase(getCurrentRoundScores.fulfilled, (state, action) => {
+                state.leaderboard = action.payload
+                state.players = action.payload.players
+                state.playerStatus = action.payload.playerStatus
+                state.roundStatus = action.payload.roundStatus
+            })
+            .addCase(setPlayerReady.fulfilled, (state, action) => {
+                state.playerStatus = 'ready'
+                state.players = action.payload.players
+            })
+            .addCase(leaveGame.fulfilled, (state, action) => {
+                state.game = null
             })
     },
 })
