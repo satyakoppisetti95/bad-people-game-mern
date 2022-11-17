@@ -36,7 +36,7 @@ function QuestionPage() {
             navigate('/roundscore')
         }
         const pullQuestion = ((roundStatus === 'choosing' &&  playerStatus !== 'voting') || (playerStatus === 'waiting' && roundStatus !== 'results') || (roundStatus === 'voting' && playerStatus !== 'waiting' )) && setInterval(() => {
-            console.log('pulling question')
+            // console.log('pulling question')
             dispatch(getCurrentQuestion())
         }, 3000)
         return () => {
@@ -68,9 +68,7 @@ function QuestionPage() {
                                         <h6>by {currentQuestion.dictator.name} </h6>
                                         <hr/>
                                         <br></br>
-                                        {roundStatus}
-                                        <br/>
-                                        {playerStatus}
+                                        
                                         {
                                             playerStatus === 'voting' ? (
                                                 <>

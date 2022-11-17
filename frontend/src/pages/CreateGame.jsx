@@ -26,7 +26,7 @@ function CreateGame() {
 
     useEffect(() => {
         const pullPlayers = game && setInterval(() => {
-            console.log('pulling players')
+            // console.log('pulling players')
             dispatch(getPlayersOfGame(game._id))
         }, 3000)
 
@@ -89,7 +89,7 @@ function CreateGame() {
                                                 <div>{players.length > 0 ? players.length : ""}</div>
                                             </div>
                                             {players.map((player) => (
-                                                <PlayerCard key={player.id} player={player} />
+                                                <PlayerCard key={player.name} player={player} />
                                             ))}
                                             {players.length > 2 ?
                                                 <div className="d-grid gap-2">

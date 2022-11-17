@@ -35,7 +35,7 @@ function RoundScore() {
 
     useEffect(() => {
         const pullQuestion = (leaderboard && (leaderboard.currentRound + 1 < leaderboard.totalRounds)) && setInterval(() => {
-            console.log('pulling statuses')
+            // console.log('pulling statuses')
             dispatch(getCurrentRoundScores())
         }, 3000)
         return () => {
@@ -124,7 +124,7 @@ function RoundScore() {
                                     ):
                                     (
                                         <div className="d-grid gap-2">
-                                        <Button variant="primary" onClick={onLeave}>Leave Game</Button>
+                                        <Button variant="dark" onClick={onLeave}>Leave Game</Button>
                                         </div>
                                     )
                                 }

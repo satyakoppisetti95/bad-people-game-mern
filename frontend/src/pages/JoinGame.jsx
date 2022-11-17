@@ -29,7 +29,7 @@ function CreateGame() {
 
     useEffect(() => {
         const pullPlayers = game && setInterval(() => {
-            console.log('pulling players')
+            // console.log('pulling players')
             dispatch(getPlayersOfGame(game._id))
         }, 3000)
         return () => {
