@@ -3,6 +3,14 @@ const bcrypt = require('bcryptjs')
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
 
+
+const toTitleCase = (str) => {
+    return str.replace(
+        /\w\S*/g,
+        (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    )
+}
+
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body
   if (!name || !email || !password) {
@@ -18,7 +26,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
-
+  name = toTitleCase(name)
   const user = await User.create({
     name,
     email,
