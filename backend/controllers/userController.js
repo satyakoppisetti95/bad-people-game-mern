@@ -26,9 +26,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
-  name = toTitleCase(name)
+  let titleName = toTitleCase(name)
   const user = await User.create({
-    name,
+    name:titleName,
     email,
     password: hashedPassword,
   })
